@@ -1,43 +1,682 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VibeWave - AI Music Discovery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes float {
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+      0%,
+      100% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.3;
+      }
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+      50% {
+        transform: translateY(-100vh) rotate(180deg);
+        opacity: 0.1;
+      }
+    }
+
+    @keyframes subtle-float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    @keyframes pulse-glow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 20px rgba(116, 185, 255, 0.4);
+      }
+
+      50% {
+        box-shadow: 0 0 40px rgba(116, 185, 255, 0.7);
+      }
+    }
+
+    @keyframes equalizer {
+      0% {
+        height: 20%;
+      }
+
+      100% {
+        height: 100%;
+      }
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -200% 0;
+      }
+
+      100% {
+        background-position: 200% 0;
+      }
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: float linear infinite;
+    }
+
+    .card-hover:hover {
+      transform: scale(1.05);
+      box-shadow: 0 20px 40px rgba(116, 185, 255, 0.3);
+    }
+
+    .card-hover:hover .card-reason {
+      max-height: 100px;
+      opacity: 1;
+    }
+
+    .card-hover:hover .album-art {
+      transform: scale(1.1);
+    }
+
+    .input-glow {
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+
+    .card-animate {
+      animation: fadeInUp 0.6s ease-out both;
+    }
+
+    .floating {
+      animation: subtle-float 4s ease-in-out infinite;
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900 min-h-screen text-white overflow-x-hidden">
+
+  <!-- Floating Particles Background -->
+  <div id="particles" class="fixed inset-0 pointer-events-none overflow-hidden"></div>
+
+  <!-- Gradient Orbs -->
+  <div class="fixed top-1/4 -left-32 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl"></div>
+  <div class="fixed bottom-1/4 -right-32 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl"></div>
+
+  <!-- Main Content -->
+  <div class="relative z-10 max-w-6xl mx-auto px-4 py-12">
+
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1
+        class="text-5xl md:text-6xl font-bold mb-3 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+        VibeWave 🎵
+      </h1>
+      <p class="text-gray-400 text-lg">AI-powered music discovery that feels like magic</p>
+    </div>
+
+    <!-- Search Form -->
+    <form id="searchForm" class="max-w-2xl mx-auto mb-12">
+      <div class="relative">
+        <input type="text" id="queryInput" placeholder="Describe a vibe, song, genre, or artist..." maxlength="500"
+          class="w-full px-6 py-4 bg-white/5 backdrop-blur-md border border-white/20 
+                 rounded-full text-white placeholder-gray-500 outline-none
+                 focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/20
+                 transition-all duration-300 input-glow" />
+        <button type="submit" id="submitBtn" class="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-2 
+                 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full
+                 font-semibold hover:opacity-90 transition-all disabled:opacity-50">
+          Discover
+        </button>
+      </div>
+
+      <!-- Quick Suggestions -->
+      <div class="flex flex-wrap gap-2 justify-center mt-4">
+        <button type="button"
+          class="suggestion-btn px-3 py-1 text-xs bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-colors text-gray-400 hover:text-white">chill
+          lo-fi</button>
+        <button type="button"
+          class="suggestion-btn px-3 py-1 text-xs bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-colors text-gray-400 hover:text-white">songs
+          like Dynamite by BTS</button>
+        <button type="button"
+          class="suggestion-btn px-3 py-1 text-xs bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-colors text-gray-400 hover:text-white">upbeat
+          jazz</button>
+        <button type="button"
+          class="suggestion-btn px-3 py-1 text-xs bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-colors text-gray-400 hover:text-white">melancholic
+          indie</button>
+        <button type="button"
+          class="suggestion-btn px-3 py-1 text-xs bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-colors text-gray-400 hover:text-white">90s
+          rock classics</button>
+      </div>
+    </form>
+
+    <!-- Error Message -->
+    <div id="errorMsg"
+      class="hidden max-w-2xl mx-auto mb-8 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-center">
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="hidden text-center py-12">
+      <div class="flex justify-center items-end gap-1 h-16 mb-4">
+        <div class="w-3 bg-gradient-to-t from-blue-500 to-purple-500 rounded-full"
+          style="animation: equalizer 0.4s ease-in-out infinite alternate; animation-delay: 0s;"></div>
+        <div class="w-3 bg-gradient-to-t from-blue-500 to-purple-500 rounded-full"
+          style="animation: equalizer 0.4s ease-in-out infinite alternate; animation-delay: 0.1s;"></div>
+        <div class="w-3 bg-gradient-to-t from-blue-500 to-purple-500 rounded-full"
+          style="animation: equalizer 0.4s ease-in-out infinite alternate; animation-delay: 0.2s;"></div>
+        <div class="w-3 bg-gradient-to-t from-blue-500 to-purple-500 rounded-full"
+          style="animation: equalizer 0.4s ease-in-out infinite alternate; animation-delay: 0.3s;"></div>
+        <div class="w-3 bg-gradient-to-t from-blue-500 to-purple-500 rounded-full"
+          style="animation: equalizer 0.4s ease-in-out infinite alternate; animation-delay: 0.4s;"></div>
+        <div class="w-3 bg-gradient-to-t from-blue-500 to-purple-500 rounded-full"
+          style="animation: equalizer 0.4s ease-in-out infinite alternate; animation-delay: 0.5s;"></div>
+        <div class="w-3 bg-gradient-to-t from-blue-500 to-purple-500 rounded-full"
+          style="animation: equalizer 0.4s ease-in-out infinite alternate; animation-delay: 0.6s;"></div>
+      </div>
+      <p class="text-gray-400">Finding your perfect vibe...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="text-center text-gray-500 py-12">
+      <p class="text-6xl mb-4">🎧</p>
+      <p>Enter a vibe above to discover your next favorite songs</p>
+    </div>
+
+    <!-- Results -->
+    <div id="resultsContainer" class="hidden">
+      <!-- Query Info -->
+      <div class="text-center mb-8">
+        <p class="text-sm text-gray-500">Showing recommendations for:</p>
+        <p id="queryEcho" class="text-xl font-semibold text-blue-400"></p>
+        <p id="vibeSummary" class="text-gray-400 mt-2 max-w-xl mx-auto"></p>
+        <div class="flex items-center justify-center gap-2 mt-3">
+          <span id="intentBadge" class="px-3 py-1 rounded-full text-sm bg-blue-500/20 text-blue-400"></span>
+          <span id="moodBadge" class="px-3 py-1 rounded-full text-sm bg-purple-500/20 text-purple-400"></span>
+        </div>
+      </div>
+
+      <!-- Music Grid -->
+      <div id="musicGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-8 pb-8"></div>
+
+      <!-- Actions -->
+      <div class="flex justify-center gap-4 mt-8">
+        <button id="replayBtn"
+          class="px-6 py-2 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all text-sm">
+          🔄 Replay Animation
+        </button>
+        <button id="newSearchBtn"
+          class="px-6 py-2 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all text-sm">
+          🔍 New Search
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="fixed bottom-4 left-0 right-0 text-center text-xs text-gray-600">
+    VibeWave • Built with n8n + AI • Making every day more vivid 让每一天都更生动
+  </div>
+
+  <script>
+    // ⚠️ IMPORTANT: Replace with your n8n Production URL
+    const N8N_WEBHOOK_URL = 'your_n8n_webhook_url';
+
+    // Audio Player State
+    let currentAudio = null;
+    let currentPlayingCard = null;
+
+    // DOM Elements
+    const searchForm = document.getElementById('searchForm');
+    const queryInput = document.getElementById('queryInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const errorMsg = document.getElementById('errorMsg');
+    const loadingState = document.getElementById('loadingState');
+    const emptyState = document.getElementById('emptyState');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const musicGrid = document.getElementById('musicGrid');
+    const queryEcho = document.getElementById('queryEcho');
+    const vibeSummary = document.getElementById('vibeSummary');
+    const intentBadge = document.getElementById('intentBadge');
+    const moodBadge = document.getElementById('moodBadge');
+
+    // Generate particles
+    function createParticles() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 15; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle bg-blue-400/30 blur-sm';
+        particle.style.width = `${8 + Math.random() * 20}px`;
+        particle.style.height = particle.style.width;
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.bottom = '-20px';
+        particle.style.animationDuration = `${8 + Math.random() * 4}s`;
+        particle.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(particle);
+      }
+    }
+    createParticles();
+
+    // Suggestion buttons
+    document.querySelectorAll('.suggestion-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        queryInput.value = btn.textContent;
+      });
+    });
+
+    // Create music card HTML
+    function createMusicCard(song, index, themeColor) {
+      const hasPreview = song.preview_url && song.preview_url !== null;
+
+      const artworkHtml = song.artwork_url
+        ? `<img src="${song.artwork_url}" alt="${song.album}" class="w-full h-full object-cover" />`
+        : `<svg class="w-12 h-12 text-white/30" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+          </svg>`;
+
+      const playButton = hasPreview ? `
+        <!-- Play/Pause Overlay -->
+        <div class="play-overlay absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-xl">
+          <div class="play-btn w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 hover:scale-110 transition-all">
+            <svg class="play-icon w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            <svg class="pause-icon w-6 h-6 text-white hidden" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+          </div>
+        </div>
+        <!-- Equalizer Animation (when playing) -->
+        <div class="equalizer-container absolute bottom-2 left-1/2 -translate-x-1/2 hidden">
+          <div class="flex items-end gap-0.5 h-4">
+            <div class="w-1 bg-white rounded-full" style="animation: equalizer 0.4s ease-in-out infinite alternate;"></div>
+            <div class="w-1 bg-white rounded-full" style="animation: equalizer 0.4s ease-in-out infinite alternate 0.1s;"></div>
+            <div class="w-1 bg-white rounded-full" style="animation: equalizer 0.4s ease-in-out infinite alternate 0.2s;"></div>
+            <div class="w-1 bg-white rounded-full" style="animation: equalizer 0.4s ease-in-out infinite alternate 0.3s;"></div>
+            <div class="w-1 bg-white rounded-full" style="animation: equalizer 0.4s ease-in-out infinite alternate 0.4s;"></div>
+          </div>
+        </div>
+      ` : (song.spotify_url ? `
+        <!-- No Preview - Show "Listen on Spotify" -->
+        <a href="${song.spotify_url}" target="_blank" onclick="event.stopPropagation()" 
+           class="absolute inset-0 flex flex-col items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-xl">
+          <svg class="w-10 h-10 text-green-500 mb-2" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+          </svg>
+          <span class="text-white text-xs font-medium">Listen on Spotify</span>
+        </a>
+      ` : `
+        <!-- No Preview and No Spotify Link -->
+        <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-xl">
+          <span class="text-white/60 text-xs">Not available</span>
+        </div>
+      `);
+
+      // Spotify button - always visible at bottom of card for songs with preview
+      const spotifyButton = song.spotify_url ? `
+        <a href="${song.spotify_url}" target="_blank" onclick="event.stopPropagation()" 
+           class="flex items-center gap-1.5 mt-3 px-3 py-1.5 bg-green-500/20 hover:bg-green-500/30 border border-green-500/30 rounded-full transition-all group">
+          <svg class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+          </svg>
+          <span class="text-green-500 text-xs font-medium group-hover:text-green-400">Open in Spotify</span>
+        </a>
+      ` : '';
+
+      return `
+        <div class="music-card card-hover relative bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 
+                    transform transition-all duration-300 cursor-pointer card-animate"
+             style="animation-delay: ${index * 100}ms;"
+             data-preview-url="${song.preview_url || ''}"
+             data-song-title="${song.title}"
+             data-song-artist="${song.artist}"
+             onclick="togglePlay(this)">
+          
+          <!-- Rank Badge -->
+          <div class="absolute -top-2 -left-2 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shadow-lg text-white z-10"
+               style="background: linear-gradient(135deg, ${themeColor}, ${themeColor}aa);">
+            ${song.rank}
+          </div>
+          
+          <!-- Album Art Container -->
+          <div class="album-art-container relative w-full aspect-square rounded-xl mb-3 overflow-hidden 
+                      bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900
+                      transition-transform duration-300">
+            <div class="album-art w-full h-full flex items-center justify-center">
+              ${artworkHtml}
+            </div>
+            ${playButton}
+          </div>
+          
+          <!-- Song Info -->
+          <h3 class="font-semibold text-white truncate text-sm">${song.title}</h3>
+          <p class="text-xs text-gray-400 truncate">${song.artist}</p>
+          <p class="text-xs text-gray-500 truncate">${song.album} • ${song.year}</p>
+          
+          <!-- Genre Tag -->
+          <div class="mt-2 inline-block px-2 py-0.5 rounded-full text-xs"
+               style="background: ${themeColor}30; color: ${themeColor};">
+            ${song.genre}
+          </div>
+          
+          <!-- Spotify Button - Always Visible -->
+          ${spotifyButton}
+          
+          <!-- Reason (shows on hover) -->
+          <div class="card-reason mt-2 text-xs transition-all duration-300 overflow-hidden max-h-0 opacity-0"
+               style="color: ${themeColor}cc;">
+            💡 ${song.reason}
+          </div>
+        </div>
+      `;
+    }
+
+    // Audio Player Functions
+    function togglePlay(card) {
+      const previewUrl = card.dataset.previewUrl;
+      if (!previewUrl) return;
+
+      const playIcon = card.querySelector('.play-icon');
+      const pauseIcon = card.querySelector('.pause-icon');
+      const equalizer = card.querySelector('.equalizer-container');
+      const playOverlay = card.querySelector('.play-overlay');
+
+      // If clicking the same card that's playing, pause it
+      if (currentPlayingCard === card && currentAudio && !currentAudio.paused) {
+        currentAudio.pause();
+        playIcon.classList.remove('hidden');
+        pauseIcon.classList.add('hidden');
+        equalizer.classList.add('hidden');
+        playOverlay.classList.remove('opacity-100');
+        card.classList.remove('ring-2', 'ring-green-500');
+        return;
+      }
+
+      // Stop any currently playing audio
+      if (currentAudio) {
+        currentAudio.pause();
+        if (currentPlayingCard) {
+          const prevPlayIcon = currentPlayingCard.querySelector('.play-icon');
+          const prevPauseIcon = currentPlayingCard.querySelector('.pause-icon');
+          const prevEqualizer = currentPlayingCard.querySelector('.equalizer-container');
+          const prevOverlay = currentPlayingCard.querySelector('.play-overlay');
+          if (prevPlayIcon) prevPlayIcon.classList.remove('hidden');
+          if (prevPauseIcon) prevPauseIcon.classList.add('hidden');
+          if (prevEqualizer) prevEqualizer.classList.add('hidden');
+          if (prevOverlay) prevOverlay.classList.remove('opacity-100');
+          currentPlayingCard.classList.remove('ring-2', 'ring-green-500');
+        }
+      }
+
+      // Create new audio and play
+      currentAudio = new Audio(previewUrl);
+      currentPlayingCard = card;
+
+      currentAudio.play().then(() => {
+        playIcon.classList.add('hidden');
+        pauseIcon.classList.remove('hidden');
+        equalizer.classList.remove('hidden');
+        playOverlay.classList.add('opacity-100');
+        card.classList.add('ring-2', 'ring-green-500');
+      }).catch(err => {
+        console.error('Error playing audio:', err);
+      });
+
+      // When audio ends
+      currentAudio.addEventListener('ended', () => {
+        playIcon.classList.remove('hidden');
+        pauseIcon.classList.add('hidden');
+        equalizer.classList.add('hidden');
+        playOverlay.classList.remove('opacity-100');
+        card.classList.remove('ring-2', 'ring-green-500');
+        currentPlayingCard = null;
+      });
+    }
+
+    // Stop audio when starting new search
+    function stopAudio() {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      if (currentPlayingCard) {
+        currentPlayingCard.classList.remove('ring-2', 'ring-green-500');
+        currentPlayingCard = null;
+      }
+    }
+
+    // Show/hide states
+    function showLoading() {
+      stopAudio(); // Stop any playing audio
+      emptyState.classList.add('hidden');
+      resultsContainer.classList.add('hidden');
+      errorMsg.classList.add('hidden');
+      loadingState.classList.remove('hidden');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `
+        <span class="flex items-center gap-2">
+          <svg class="w-5 h-5" style="animation: spin 1s linear infinite" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+          </svg>
+          Vibing...
+        </span>
+      `;
+    }
+
+    function showResults(data) {
+      loadingState.classList.add('hidden');
+      emptyState.classList.add('hidden');
+      errorMsg.classList.add('hidden');
+      resultsContainer.classList.remove('hidden');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Discover';
+
+      const themeColor = data.theme?.color || '#74B9FF';
+
+      queryEcho.textContent = `"${data.query}"`;
+      queryEcho.style.color = themeColor;
+      vibeSummary.textContent = data.vibe_summary || '';
+      intentBadge.textContent = data.intent;
+      moodBadge.textContent = data.theme?.mood || 'vibing';
+
+      // Clear and populate grid
+      musicGrid.innerHTML = '';
+      console.log('Rendering', data.recommendations.length, 'songs');
+      data.recommendations.forEach((song, index) => {
+        const cardHTML = createMusicCard(song, index, themeColor);
+        musicGrid.innerHTML += cardHTML;
+      });
+      console.log('Grid populated with', musicGrid.children.length, 'cards');
+    }
+
+    function showError(message) {
+      loadingState.classList.add('hidden');
+      errorMsg.textContent = message;
+      errorMsg.classList.remove('hidden');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Discover';
+    }
+
+    function resetToEmpty() {
+      stopAudio(); // Stop any playing audio
+      resultsContainer.classList.add('hidden');
+      errorMsg.classList.add('hidden');
+      loadingState.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      queryInput.value = '';
+    }
+
+    // Form submit handler
+    searchForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const query = queryInput.value.trim();
+
+      // ===== INPUT GUARDRAILS =====
+      // 1. Empty check
+      if (!query) {
+        showError('Please enter a music query.');
+        return;
+      }
+
+      // 2. Query length limit (500 chars)
+      if (query.length > 500) {
+        showError('Query too long. Please keep it under 500 characters.');
+        return;
+      }
+
+      // 3. Minimum length check
+      if (query.length < 2) {
+        showError('Query too short. Please be more specific.');
+        return;
+      }
+
+      showLoading();
+
+      // ===== SYSTEM GUARDRAILS =====
+      // Timeout handling (60 seconds - AI + Spotify needs time)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+      try {
+        const response = await fetch(N8N_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query }),
+          signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        const result = await response.json();
+        console.log('Response:', result);
+
+        // Handle various response formats from n8n
+        let data = null;
+
+        if (Array.isArray(result) && result[0]) {
+          // n8n returns an array
+          const first = result[0];
+          if (first.json?.data) {
+            data = first.json.data;
+          } else if (first.json?.recommendations) {
+            data = first.json;
+          } else if (first.data) {
+            data = first.data;
+          } else if (first.recommendations) {
+            data = first;
+          } else {
+            data = first;
+          }
+        } else if (result.json?.data) {
+          data = result.json.data;
+        } else if (result.success && result.data) {
+          data = result.data;
+        } else if (result.data) {
+          data = result.data;
+        } else if (result.recommendations) {
+          data = result;
+        } else {
+          data = result;
+        }
+
+        console.log('Parsed data:', data);
+
+        // ===== OUTPUT GUARDRAILS =====
+        // 1. Check if data exists
+        if (!data) {
+          showError('No data received. Please try again.');
+          return;
+        }
+
+        // 2. Check recommendations array exists
+        if (!data.recommendations || !Array.isArray(data.recommendations)) {
+          showError('Invalid response format. Missing recommendations.');
+          console.log('Invalid data structure:', data);
+          return;
+        }
+
+        // 3. Check song count (should be 10, accept 1-15)
+        if (data.recommendations.length === 0) {
+          showError('No songs found. Try a different query.');
+          return;
+        }
+
+        if (data.recommendations.length < 5) {
+          console.warn('Fewer than expected songs:', data.recommendations.length);
+        }
+
+        // 4. Validate required fields (with fallbacks)
+        data.recommendations = data.recommendations.map((song, index) => ({
+          rank: song.rank || index + 1,
+          title: song.title || 'Unknown Title',
+          artist: song.artist || 'Unknown Artist',
+          album: song.album || 'Unknown Album',
+          year: song.year || '',
+          genre: song.genre || 'Music',
+          reason: song.reason || 'Recommended for you',
+          artwork_url: song.artwork_url || null,
+          spotify_url: song.spotify_url || null,
+          preview_url: song.preview_url || null
+        }));
+
+        showResults(data);
+
+      } catch (err) {
+        console.error('Error:', err);
+
+        // ===== ERROR GUARDRAILS =====
+        if (err.name === 'AbortError') {
+          showError('Request timed out. The AI is taking too long. Please try again.');
+        } else if (err.message.includes('Failed to fetch')) {
+          showError('Cannot connect to server. Make sure n8n is running.');
+        } else {
+          showError('Something went wrong. Please try again.');
+        }
+      }
+    });
+
+    // Replay animation
+    document.getElementById('replayBtn').addEventListener('click', () => {
+      const cards = document.querySelectorAll('.card-animate');
+      cards.forEach(card => {
+        card.style.animation = 'none';
+        card.offsetHeight; // Trigger reflow
+        card.style.animation = null;
+      });
+    });
+
+    // New search
+    document.getElementById('newSearchBtn').addEventListener('click', resetToEmpty);
+  </script>
+</body>
+
 </html>

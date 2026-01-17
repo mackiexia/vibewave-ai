@@ -1,70 +1,59 @@
-# Getting Started with Create React App
+# VibeWave 🎶 — AI Music Discovery
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+VibeWave is an AI-powered music recommendation experience.  
+Users describe a vibe, mood, genre, or reference song (e.g. “chill lo-fi for studying” or “songs like Dynamite by BTS but more mellow”), and VibeWave returns a curated set of tracks with artwork, preview audio, and Spotify links.
 
-## Available Scripts
+> This repository contains the **frontend** for VibeWave.  
+> The AI agent and music-enrichment logic run in **n8n**, which is not included here.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## What This Repo Contains
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- React-based frontend for user interaction
+- UI logic for:
+  - Natural-language query input
+  - Animated music cards
+  - Audio preview playback
+  - Spotify “Open in app” links
+- API interface to a backend **n8n webhook** (configurable)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## What This Repo Does **Not** Contain
 
-### `npm test`
+- Any API keys (DeepSeek, Spotify, etc.)
+- n8n credentials or workflow secrets
+- Deployed backend services
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+All credentials are expected to be configured **in your own n8n instance**, not in this repo.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Tech Stack
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**Frontend (this repo)**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- React (Create React App)
+- Tailwind CSS (via CDN)
+- Vanilla JS for audio and animation logic
 
-### `npm run eject`
+**Backend (not included in this repo)**
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- n8n (workflow automation & orchestration)
+- DeepSeek Chat (AI reasoning & recommendations)
+- Spotify Web API (track metadata, artwork, previews)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Architecture Overview
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```text
+Frontend (React)
+  → n8n Webhook (HTTP endpoint you configure)
+    → AI Agent (DeepSeek Chat)
+    → Spotify API (track enrichment)
+```
 
-## Learn More
+## Docs
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [n8n Workflow Overview](docs/n8n_workflow_overview.md)
+- [PRD](docs/VibeWave_PRD_v2.docx)
