@@ -66,7 +66,7 @@ However, I was the architect behind the product vision and AI workflow, ensuring
 ## Docs
 
 - [n8n Workflow Overview](docs/n8n_workflow_overview.md)
-- [PRD](docs/VibeWave_PRD_v2.docx)
+- [PRD](docs/VibeWave_PRD_v2.md)
 
 ## Screenshot Demo
 
