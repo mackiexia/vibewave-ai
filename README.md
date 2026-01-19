@@ -1,4 +1,4 @@
-# VibeWave 🎶 — AI Music Discovery
+# VibeWave 🎶 — Music Discovery
 
 VibeWave is an AI-powered music recommendation experience.  
 Users describe a vibe, mood, genre, or reference song (e.g. “chill lo-fi for studying” or “songs like Dynamite by BTS but more mellow”), and VibeWave returns a curated set of tracks with artwork, preview audio, and Spotify links.
