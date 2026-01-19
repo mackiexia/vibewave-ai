@@ -53,7 +53,27 @@ Frontend (React)
     → Spotify API (track enrichment)
 ```
 
+## Development Process
+
+To help accelerate the development, I used **AI-driven tools**, like Claude Opus 4.5, to assist with:
+
+- Writing some boilerplate code
+- Creating product prompts and documentation
+- Generating sample data for testing purposes
+
+However, I was the architect behind the product vision and AI workflow, ensuring the system aligned with user needs and security requirements.
+
 ## Docs
 
 - [n8n Workflow Overview](docs/n8n_workflow_overview.md)
 - [PRD](docs/VibeWave_PRD_v2.docx)
+
+## Screenshot Demo
+
+![Webhook trigger node](/docs/images/Demo0.png)
+<br>
+<br>
+![Webhook trigger node](/docs/images/Demo1.png)
+<br>
+<br>
+![Webhook trigger node](/docs/images/Demo2.png)
