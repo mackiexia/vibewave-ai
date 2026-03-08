@@ -70,12 +70,5 @@ However, I was the architect behind the product vision and AI workflow, ensuring
 
 ## Demo
 
-![Demo](docs/images/demo.gif)
+![Demo](https://github.com/mackiexia/vibewave-ai/blob/main/docs/images/Demo.gif?raw=true)
 
-![Webhook trigger node](/docs/images/Demo0.png)
-<br>
-<br>
-![Webhook trigger node](/docs/images/Demo1.png)
-<br>
-<br>
-![Webhook trigger node](/docs/images/Demo2.png)
