@@ -68,7 +68,7 @@ However, I was the architect behind the product vision and AI workflow, ensuring
 
 - [n8n Workflow Overview](docs/n8n_workflow_overview.md)
 - [PRD](docs/VibeWave_PRD_v2.md)
-- [Eval Dashboard](docs/VibeWaveEvalDashboard.html)
+- [Eval Dashboard](https://htmlpreview.github.io/?https://github.com/mackiexia/vibewave-ai/blob/main/docs/VibeWaveEvalDashboard.html)
   
 
 ## Demo
