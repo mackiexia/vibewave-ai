@@ -198,8 +198,6 @@ French café jazz satisfaction rose from 30% → 70% after adding `prioritize po
 | Discover Again Button | ✅ Complete | Re-triggers same query for fresh recommendations |
 | Evaluation Framework | ✅ Complete | 2 rounds, 17+ queries, 3-layer metrics, A/B testing |
 | Cloud Deployment | 🔄 Planned | GitHub Pages (frontend) + Railway/Render (n8n) |
-| `music_language` Param | 🔄 Planned | Explicit language param to improve C-pop / non-English results |
-| `retry` Param Logic | 🔄 Planned | On Discover Again, shift to higher hidden gems ratio |
 
 ---
 
@@ -216,13 +214,11 @@ French café jazz satisfaction rose from 30% → 70% after adding `prioritize po
 
 ## 10. Future Enhancements
 
-### Phase 2 — Next Sprint
 - `music_language` parameter for explicit non-English music recommendations
 - `retry` parameter logic: progressive hidden gems ratio on Discover Again
 - Spotify click tracking for implicit engagement metrics
 - Cloud deployment: GitHub Pages + Railway
 
-### Phase 3 — Future
 - User accounts with saved playlists and search history
 - Export to Spotify playlist feature
 - Social sharing of recommendation sets
